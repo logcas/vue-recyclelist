@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-    <div ref="scroll" id="wrapper">
-      <div>
-        <div v-for="item in items" :key="item.uid" class="item">
+    <VueRecyclelist :items="items" :item-height="81">
+      <template v-slot="{ item }">
+        <div class="item">
           <img :src="item.avatar" class="item-avatar" />
           <div class="item-username">{{ item.name }}</div>
         </div>
-      </div>
-    </div>
+      </template>
+    </VueRecyclelist>
   </div>
 </template>
 
 <script>
 import faker from "faker";
-import Scroller from "./scroller";
+import VueRecyclelist from "@/components/RecycleList.vue";
 
 function buildData() {
   const res = [];
@@ -29,16 +29,13 @@ function buildData() {
 
 export default {
   name: "App",
+  components: {
+    VueRecyclelist,
+  },
   data() {
     return {
       items: buildData(),
     };
-  },
-  mounted() {
-    const scroller = new Scroller(this.$refs.scroll);
-    scroller.$on('scroll', pos => {
-      console.log(pos);
-    });
   },
 };
 </script>
@@ -53,11 +50,6 @@ export default {
 * {
   margin: 0;
   padding: 0;
-}
-
-#wrapper {
-  height: 80vh;
-  overflow: hidden;
 }
 
 .item {

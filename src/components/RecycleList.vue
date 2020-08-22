@@ -55,7 +55,7 @@ export default {
     // 上下延伸的buffer区域，单位为px
     buffer: {
       type: Number,
-      default: 300,
+      default: 1000,
     },
     // 虚拟列表父元素，默认为window
     wrapper: {
