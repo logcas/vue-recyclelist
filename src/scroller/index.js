@@ -1,5 +1,6 @@
-import { getEl, bindEvent, rAF } from './helper';
+import { getEl, bindEvent } from './helper';
 import EventEmitter from './emitter';
+import ScrollFrame from './scroll-frame';
 
 const defaultOptions = {
   scrollY: true,
@@ -92,12 +93,18 @@ export default class Scroller extends EventEmitter {
       this._translate(newY, true);
 
       const self = this;
+      // const rafCallback = function() {
+      //   const pos = self.getComputedPosition();
+      //   self.$emit('scroll', pos);
+      //   self.rafTimer = rAF(rafCallback);
+      // };
+      // this.rafTimer = rAF(rafCallback);
+
       const rafCallback = function() {
         const pos = self.getComputedPosition();
         self.$emit('scroll', pos);
-        self.rafTimer = rAF(rafCallback);
       };
-      this.rafTimer = rAF(rafCallback);
+      ScrollFrame.$watch(rafCallback);
     }
     this.y = newY;
     // this._translate(this.y);
@@ -105,7 +112,7 @@ export default class Scroller extends EventEmitter {
 
   _stopTransition() {
     if (this.isInTransition) {
-      window.cancelAnimationFrame(this.rafTimer);
+      ScrollFrame.$unwatch();
       this.isInTransition = false;
       const pos = this.getComputedPosition();
       console.log('genComputed:', pos.y);
@@ -126,7 +133,8 @@ export default class Scroller extends EventEmitter {
 
   _transitionEnd() {
     this.isInTransition = false;
-    window.cancelAnimationFrame(this.rafTimer);
+    // window.cancelAnimationFrame(this.rafTimer);
+    ScrollFrame.$unwatch();
   }
 
   getComputedPosition() {
